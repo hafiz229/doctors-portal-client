@@ -4,7 +4,10 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInWithPopup,
   onAuthStateChanged,
+  GoogleAuthProvider,
+  updateProfile,
   signOut,
 } from "firebase/auth";
 
@@ -17,12 +20,22 @@ const useFirebase = () => {
   const [authError, setAuthError] = useState("");
 
   const auth = getAuth();
+  const googleProvider = new GoogleAuthProvider();
 
-  const registerUser = (email, password) => {
+  const registerUser = (email, password, name, history) => {
     setIsLoading(true);
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         setAuthError("");
+        const newUser = { email, displayUser: name };
+        setUser(newUser);
+        // send name to firebase after creation
+        updateProfile(auth.currentUser, {
+          displayName: name,
+        })
+          .then(() => {})
+          .catch((error) => {});
+        history.replace("/");
       })
       .catch((error) => {
         setAuthError(error.message);
@@ -31,6 +44,7 @@ const useFirebase = () => {
       .finally(() => setIsLoading(false));
   };
 
+  // Sign In User with Email/Password
   const loginUser = (email, password, location, history) => {
     setIsLoading(true);
     signInWithEmailAndPassword(auth, email, password)
@@ -60,6 +74,21 @@ const useFirebase = () => {
     return () => unsubscribed;
   }, []);
 
+  // Sign In User With Google
+  const SignInWithGoogle = (location, history) => {
+    setIsLoading(true);
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        const user = result.user;
+        setAuthError("");
+      })
+      .catch((error) => {
+        setAuthError(error.message);
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  // Sign Out User
   const logOut = () => {
     setIsLoading(true);
     signOut(auth)
@@ -78,6 +107,7 @@ const useFirebase = () => {
     authError,
     registerUser,
     loginUser,
+    SignInWithGoogle,
     logOut,
   };
 };
