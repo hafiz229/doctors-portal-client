@@ -36,7 +36,7 @@ function Dashboard(props) {
     <div>
       <Toolbar />
       <Divider />
-      <Link to="/appointment">
+      <Link to="/appointment" style={{ textDecoration: "none" }}>
         <Button color="inherit">Appointment</Button>
       </Link>
       <List>
