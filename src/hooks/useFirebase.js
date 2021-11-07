@@ -8,6 +8,7 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   updateProfile,
+  getIdToken,
   signOut,
 } from "firebase/auth";
 
@@ -18,6 +19,8 @@ const useFirebase = () => {
   const [user, setUser] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [authError, setAuthError] = useState("");
+  const [admin, setAdmin] = useState(false);
+  const [token, setToken] = useState("");
 
   const auth = getAuth();
   const googleProvider = new GoogleAuthProvider();
@@ -69,6 +72,10 @@ const useFirebase = () => {
     const unsubscribed = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
+        // get jwt token
+        getIdToken(user).then((idToken) => {
+          setToken(idToken);
+        });
       } else {
         setUser({});
       }
@@ -94,6 +101,13 @@ const useFirebase = () => {
       })
       .finally(() => setIsLoading(false));
   };
+
+  // check whether an user is an Admin or not
+  useEffect(() => {
+    fetch(`http://localhost:5000/users/${user.email}`)
+      .then((res) => res.json())
+      .then((data) => setAdmin(data.admin));
+  }, [user.email]);
 
   // Sign Out User
   const logOut = () => {
@@ -125,6 +139,8 @@ const useFirebase = () => {
 
   return {
     user,
+    admin,
+    token,
     isLoading,
     authError,
     registerUser,

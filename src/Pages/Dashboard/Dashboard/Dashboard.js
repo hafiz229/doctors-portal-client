@@ -15,18 +15,26 @@ import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { Button, Grid } from "@mui/material";
-import Calender from "../../Shared/Calender/Calender";
-import Appointments from "../Appointments/Appointments";
-import { Link } from "react-router-dom";
+import { Button } from "@mui/material";
+// import { Link } from "react-router-dom";
+import { Switch, Route, Link, useRouteMatch } from "react-router-dom";
+import DashboardHome from "../DashboardHome/DashboardHome";
+import MakeAdmin from "../MakeAdmin/MakeAdmin";
+import AddDoctor from "../AddDoctor/AddDoctor";
+import useAuth from "../../../hooks/useAuth";
+import AdminRoute from "../../Login/AdminRoute/AdminRoute";
 
 const drawerWidth = 200;
 
 function Dashboard(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  // declare a useState to customize data by Date
-  const [date, setDate] = React.useState(new Date());
+
+  // from nesting of react router
+  let { path, url } = useRouteMatch();
+
+  // receive admin from useAuth()
+  const { admin } = useAuth();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -39,6 +47,20 @@ function Dashboard(props) {
       <Link to="/appointment" style={{ textDecoration: "none" }}>
         <Button color="inherit">Appointment</Button>
       </Link>
+      {/* from nesting of react router (next 3 <Link>) */}
+      <Link to={`${url}`} style={{ textDecoration: "none" }}>
+        <Button color="inherit">Dashboard</Button>
+      </Link>
+      {admin && (
+        <Box>
+          <Link to={`${url}/makeAdmin`} style={{ textDecoration: "none" }}>
+            <Button color="inherit">Make Admin</Button>
+          </Link>
+          <Link to={`${url}/addDoctor`} style={{ textDecoration: "none" }}>
+            <Button color="inherit">Add Doctor</Button>
+          </Link>
+        </Box>
+      )}
       <List>
         {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
           <ListItem button key={text}>
@@ -126,16 +148,17 @@ function Dashboard(props) {
         }}
       >
         <Toolbar />
-        <Typography paragraph>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={5} md={6}>
-              <Calender date={date} setDate={setDate}></Calender>
-            </Grid>
-            <Grid item xs={12} sm={7} md={6}>
-              <Appointments date={date}></Appointments>
-            </Grid>
-          </Grid>
-        </Typography>
+        <Switch>
+          <Route exact path={path}>
+            <DashboardHome></DashboardHome>
+          </Route>
+          <AdminRoute path={`${path}/makeAdmin`}>
+            <MakeAdmin></MakeAdmin>
+          </AdminRoute>
+          <AdminRoute path={`${path}/addDoctor`}>
+            <AddDoctor></AddDoctor>
+          </AdminRoute>
+        </Switch>
       </Box>
     </Box>
   );
