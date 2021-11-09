@@ -82,7 +82,7 @@ const useFirebase = () => {
       setIsLoading(false);
     });
     return () => unsubscribed;
-  }, []);
+  }, [auth]);
 
   // Sign In / Sing Up User With Google
   const SignInWithGoogle = (location, history) => {
@@ -104,7 +104,7 @@ const useFirebase = () => {
 
   // check whether an user is an Admin or not
   useEffect(() => {
-    fetch(`http://localhost:5000/users/${user.email}`)
+    fetch(`https://still-sands-25307.herokuapp.com/users/${user.email}`)
       .then((res) => res.json())
       .then((data) => setAdmin(data.admin));
   }, [user.email]);
@@ -126,7 +126,7 @@ const useFirebase = () => {
   const saveUser = (email, displayName, method) => {
     // use email, displayName directly as they matches firebase format
     const user = { email, displayName };
-    fetch("http://localhost:5000/users", {
+    fetch("https://still-sands-25307.herokuapp.com/users", {
       method: method,
       headers: {
         "content-type": "application/json",
