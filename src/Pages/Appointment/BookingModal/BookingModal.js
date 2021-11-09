@@ -29,6 +29,7 @@ const BookingModal = ({
 }) => {
   const { name, time } = booking;
   const { user } = useAuth();
+  console.log(user);
   // set initial info of the user
   const initialInfo = {
     patientName: user.displayName,
@@ -104,7 +105,7 @@ const BookingModal = ({
               id="outlined-size-small"
               name="patientName"
               onBlur={handleOnBlur}
-              defaultValue={user.displayName}
+              defaultValue={user?.displayName}
               size="small"
             />
             <TextField
