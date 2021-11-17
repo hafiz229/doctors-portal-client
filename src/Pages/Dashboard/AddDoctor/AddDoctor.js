@@ -19,7 +19,7 @@ const AddDoctor = () => {
     formData.append("image", image);
 
     // post data to server-side
-    fetch("http://localhost:5000/doctors", {
+    fetch("https://still-sands-25307.herokuapp.com/doctors", {
       method: "POST",
       body: formData,
     })
