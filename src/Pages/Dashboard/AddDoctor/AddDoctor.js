@@ -5,6 +5,7 @@ const AddDoctor = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [image, setImage] = useState(null);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,6 +26,7 @@ const AddDoctor = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data.insertedId) {
+          setSuccess("Doctor added successfully");
           console.log("doctor added successfully");
         }
       })
@@ -63,6 +65,7 @@ const AddDoctor = () => {
           Add Doctor
         </Button>
       </form>
+      {success && <p style={{ color: "green" }}>{success}</p>}
     </div>
   );
 };
