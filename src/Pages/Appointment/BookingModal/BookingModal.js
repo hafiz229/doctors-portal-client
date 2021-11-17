@@ -27,7 +27,7 @@ const BookingModal = ({
   date,
   setBookingSuccess,
 }) => {
-  const { name, time } = booking;
+  const { name, price, time } = booking;
   const { user } = useAuth();
   console.log(user);
   // set initial info of the user
@@ -47,12 +47,13 @@ const BookingModal = ({
     // console.log(newInfo);
     setBookingInfo(newInfo);
   };
-
+  console.log(user?.displayName);
   const handleBookingSubmit = (e) => {
     // collect all data
     const appointment = {
       ...bookingInfo,
       time,
+      price,
       serviceName: name,
       date: date.toLocaleDateString(),
     };
